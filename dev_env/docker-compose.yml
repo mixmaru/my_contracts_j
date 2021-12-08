@@ -1,0 +1,30 @@
+version: '3'
+services:
+  web_api_app:
+    build: 
+      context: ./web_api_app/
+      args:
+        UID: 1000
+        GID: 1000
+        USERNAME: app_user
+        GROUPNAME: app_user
+    ports:
+      - "18080:8080"
+    volumes:
+      - ../:/home/app_user/app
+      - ./cache/.m2:/home/app_user/.m2
+        #command: bash -c "cd /app_user/ && make build-run" # todo: ビルドして実行できることを確認する
+    command: tail -f /dev/null
+
+    #  db:
+    #    image: container-registry.oracle.com/database/enterprise:21.3.0.0
+    #    ports:
+    #      - "11521:1521"
+    #      - "15500:5500"
+    #    environment:
+    #      ORACLE_SID: contracts
+    #      ORACLE_PDB: my_contracts
+    #      ORACLE_PWD: password
+#    volumes:
+#      - my_contracts_postgres:/var/lib/postgresql/data
+#      - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

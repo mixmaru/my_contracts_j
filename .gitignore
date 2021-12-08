@@ -1,3 +1,7 @@
+# cache
+dev_env/cache/.m2/**/*
+!/dev_env/cache/.m2/.gitkeep
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
