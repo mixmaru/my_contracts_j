@@ -10,14 +10,19 @@ clean-dev-env:
 		docker-compose stop && docker-compose rm -f
 
 # 最新コードでdev実行
-build-run-app-dev:
+run-dev:
 	cd ./dev_env && \
 		docker-compose exec web_api_app bash -c "cd app && ./mvnw spring-boot:run"
 
 # 最新コードでpackage build実行
-build-run-app-prod:
+run-prod:
 	cd ./dev_env && \
 		docker-compose exec web_api_app bash -c "cd app && ./mvnw package && java -jar target/my_contracts_j-0.0.1-SNAPSHOT.jar"
+
+# 最新コードでunittest実行
+test:
+	cd ./dev_env && \
+		docker-compose exec web_api_app bash -c "cd app && ./mvnw test"
 
 ps:
 	cd ./dev_env && \
