@@ -17,13 +17,16 @@ class UserApplicationTest {
 
     @Test
     void registerNewIndividualUserが実行でき登録できる() {
+        // 実行
         var savedUser = app.registerNewIndividualUser("太郎");
+        // 検証
         var user = repository.findById(savedUser.getUserId());
         assertEquals(savedUser.getUserId(), user.orElseThrow().getUserId());
 
+        // 実行
         savedUser = app.registerNewIndividualUser("次郎");
+        // 検証
         user = repository.findById(savedUser.getUserId());
-
         assertEquals(savedUser.getUserId(), user.orElseThrow().getUserId());
     }
 }
