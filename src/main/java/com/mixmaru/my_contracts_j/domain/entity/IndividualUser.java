@@ -3,7 +3,7 @@ package com.mixmaru.my_contracts_j.domain.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 @Data
 @Entity
@@ -13,6 +13,6 @@ public class IndividualUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     private String name;
-    private Date createdAt;
-    private Date updatedAt;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
 }

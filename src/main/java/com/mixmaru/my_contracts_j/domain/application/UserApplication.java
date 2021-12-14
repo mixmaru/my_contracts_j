@@ -5,7 +5,8 @@ import com.mixmaru.my_contracts_j.domain.entity.IndividualUser;
 import com.mixmaru.my_contracts_j.repository.IndividualUserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
 
 @Service
 public class UserApplication {
@@ -15,10 +16,11 @@ public class UserApplication {
         this.repository = repository;
     }
 
+    @Transactional
     public IndividualUser registerNewIndividualUser(String name) {
         var user = new IndividualUser();
         user.setName(name);
-        var now =  new Date();
+        var now = ZonedDateTime.now();
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
         return repository.save(user);
