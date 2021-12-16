@@ -1,7 +1,7 @@
 package com.mixmaru.my_contracts_j.controller;
 
 import com.mixmaru.my_contracts_j.domain.application.UserApplication;
-import com.mixmaru.my_contracts_j.domain.entity.IndividualUser;
+import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -35,15 +37,12 @@ public class UserControllerMockMvcTest {
     @Test
     public void RegisterUser() throws Exception {
         // モック作成
-        var retUser = new IndividualUser();
-        retUser.setUserId(1L);
-        retUser.setName("yamada");
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
-        retUser.setCreatedAt(now);
-        retUser.setUpdatedAt(now);
+        var retUser = new IndividualUserEntity("yamada", now);
+        retUser.setId(1L);
 
-        when(userApplication.registerNewIndividualUser("yamada")).thenReturn(retUser);
+        when(userApplication.registerNewIndividualUser(eq("yamada"), any(ZonedDateTime.class))).thenReturn(retUser);
 
-        this.mockMvc.perform(post("/user/").param("name", "yamada")).andExpect(content().string("{\"userId\":1,\"name\":\"yamada\",\"createdAt\":\"2021-12-24T22:10:10+09:00\",\"updatedAt\":\"2021-12-24T22:10:10+09:00\"}"));
+        this.mockMvc.perform(post("/user/").param("name", "yamada")).andExpect(content().string("{\"id\":1,\"createdAt\":\"2021-12-24T22:10:10+09:00\",\"updatedAt\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
     }
 }
