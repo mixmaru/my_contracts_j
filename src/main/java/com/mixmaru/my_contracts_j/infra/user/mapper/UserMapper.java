@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 public class UserMapper {
     @Id
