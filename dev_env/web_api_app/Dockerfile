@@ -1,5 +1,7 @@
 FROM openjdk:11
 
+RUN apt update && apt -y upgrade
+
 # ユーザー作成
 ARG USERNAME=app_user
 ARG GROUPNAME=app_user

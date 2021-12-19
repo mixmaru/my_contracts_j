@@ -24,6 +24,11 @@ test:
 	cd ./dev_env && \
 		docker-compose exec web_api_app bash -c "cd app && ./mvnw test"
 
+# 成果物をclean
+clean:
+	cd ./dev_env && \
+		docker-compose exec web_api_app bash -c "cd app && ./mvnw clean"
+
 ps:
 	cd ./dev_env && \
 		docker-compose ps -a
@@ -32,6 +37,14 @@ ps:
 log-tail:
 	cd ./dev_env && \
 		docker-compose logs -f
+
+login:
+	cd ./dev_env && \
+		docker-compose exec web_api_app bash
+
+login-root:
+	cd ./dev_env && \
+		docker-compose exec -u root web_api_app bash
 
 #create-containers:
 #	cd ./dev_env && \
