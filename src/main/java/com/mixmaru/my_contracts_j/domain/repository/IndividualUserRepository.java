@@ -6,6 +6,7 @@ import com.mixmaru.my_contracts_j.infra.user.mapper.IndividualUserMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Repository
 public class IndividualUserRepository {
@@ -25,10 +26,13 @@ public class IndividualUserRepository {
         var savedIndividualUser = individualUserInnerRepository.save(individualUserMapper);
 
         // 返却用entityに組み立てる
-        entity.setId(savedIndividualUser.getId());
-        entity.setName(savedIndividualUser.getName());
-        entity.setCreatedAt(savedIndividualUser.getCreatedAt());
-        entity.setUpdatedAt(savedIndividualUser.getUpdatedAt());
-        return entity;
+        return savedIndividualUser.generateEntity();
+    }
+
+    public Optional<IndividualUserEntity> getById(Long id) {
+        var loadedUser = individualUserInnerRepository.findById(id);
+
+        // 返却用entityに組み立てる
+        return loadedUser.map(IndividualUserMapper::generateEntity);
     }
 }
