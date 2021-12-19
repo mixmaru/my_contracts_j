@@ -1,8 +1,8 @@
 package com.mixmaru.my_contracts_j.domain.repository;
 
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
-import com.mixmaru.my_contracts_j.infra.individual_user.IndividualUserInfraRepository;
-import com.mixmaru.my_contracts_j.infra.individual_user.IndividualUserMapper;
+import com.mixmaru.my_contracts_j.infra.user.IndividualUserInfraRepository;
+import com.mixmaru.my_contracts_j.infra.user.mapper.IndividualUserMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;

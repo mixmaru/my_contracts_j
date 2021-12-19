@@ -1,6 +1,5 @@
-package com.mixmaru.my_contracts_j.infra.individual_user;
+package com.mixmaru.my_contracts_j.infra.user.mapper;
 
-import com.mixmaru.my_contracts_j.infra.user.UserMapper;
 import lombok.Data;
 
 import javax.persistence.*;

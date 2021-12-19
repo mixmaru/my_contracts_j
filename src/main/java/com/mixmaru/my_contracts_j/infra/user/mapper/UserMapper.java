@@ -1,4 +1,4 @@
-package com.mixmaru.my_contracts_j.infra.user;
+package com.mixmaru.my_contracts_j.infra.user.mapper;
 
 import lombok.Data;
 
