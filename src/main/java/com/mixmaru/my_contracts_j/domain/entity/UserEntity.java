@@ -16,4 +16,10 @@ public class UserEntity {
         this.createdAt = createdAt;
         this.updatedAt = createdAt;
     }
+
+    public UserEntity(Long id, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }

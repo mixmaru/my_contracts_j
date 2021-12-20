@@ -2,9 +2,7 @@ package com.mixmaru.my_contracts_j.controller;
 
 import com.mixmaru.my_contracts_j.domain.application.UserApplication;
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 
@@ -15,6 +13,11 @@ public class UserController {
 
     public UserController(UserApplication userApplication) {
         this.userApplication = userApplication;
+    }
+
+    @GetMapping("/user/{id}")
+    public IndividualUserEntity get(@PathVariable("id") Long id) {
+        return userApplication.getIndividualUser(id).orElseThrow();
     }
 
     @PostMapping("/user/")

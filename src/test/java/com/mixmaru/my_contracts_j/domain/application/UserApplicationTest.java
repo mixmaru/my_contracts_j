@@ -1,9 +1,9 @@
 package com.mixmaru.my_contracts_j.domain.application;
 
-import com.mixmaru.my_contracts_j.domain.repository.IndividualUserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -15,26 +15,34 @@ class UserApplicationTest {
     @Autowired
     private UserApplication app;
 
-    @Autowired
-    private IndividualUserRepository individualUserRepository;
-
     @Test
-    void registerNewIndividualUserが実行でき登録できる() {
-        // 実行
-        var now = ZonedDateTime.of(2021,2,3,4,5,6,7, ZoneId.of("Asia/Tokyo"));
+    @Transactional
+    void registerNewIndividualUserで登録できgetIndividualUserで取得できる() {
+        // 準備
+        var now = ZonedDateTime.of(2021,2,3,4,5,6,555555555, ZoneId.of("Asia/Tokyo"));
         var savedUser = app.registerNewIndividualUser("太郎", now);
 
-        // 検証
         assertNotNull(savedUser);
-//        var user = infra.findById(savedUser.getUserId());
-//        assertEquals(savedUser.getUserId(), user.orElseThrow().getUserId());
-//        assertEquals("太郎", user.orElseThrow().getName());
-//
-//        // 実行
-//        savedUser = app.registerNewIndividualUser("次郎");
-//        // 検証
-//        user = infra.findById(savedUser.getUserId());
-//        assertEquals(savedUser.getUserId(), user.orElseThrow().getUserId());
-//        assertEquals("次郎", user.orElseThrow().getUserId());
+
+        // 実行
+        var gotUser = app.getIndividualUser(savedUser.getId());
+
+        // 検証
+
+        assertTrue(gotUser.isPresent());
+        assertEquals(savedUser.getId(), gotUser.orElseThrow().getId());
+        assertEquals("太郎", gotUser.orElseThrow().getName());
+        assertEquals(now, gotUser.orElseThrow().getCreatedAt());
+        assertEquals(now, gotUser.orElseThrow().getUpdatedAt());
+    }
+
+    @Test
+    @Transactional
+    void getIndividualUser_データがなければ空データが返ってくる() {
+        // 実行
+        var gotUser = app.getIndividualUser(-1000L);
+
+        // 検証
+        assertTrue(gotUser.isEmpty());
     }
 }
