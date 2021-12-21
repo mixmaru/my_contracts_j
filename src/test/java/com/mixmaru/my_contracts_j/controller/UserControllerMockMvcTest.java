@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * ここ見ながら書いた
@@ -57,6 +58,18 @@ public class UserControllerMockMvcTest {
 
         when(userApplication.getIndividualUser(1L)).thenReturn(Optional.ofNullable(retUser));
 
-        this.mockMvc.perform(get("/user/1")).andExpect(content().string("{\"id\":1,\"createdAt\":\"2021-12-24T22:10:10+09:00\",\"updatedAt\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
+        this.mockMvc.perform(get("/user/1")).andExpect(content().json("{\"id\":1,\"createdAt\":\"2021-12-24T22:10:10+09:00\",\"updatedAt\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
+    }
+
+    @Test
+    public void get_userが存在しない場合404が返る() throws Exception {
+        // モック作成
+        when(userApplication.getIndividualUser(1L)).thenReturn(Optional.empty());
+
+        // 検証
+        this.mockMvc.perform(get("/user/-100"))
+                .andExpect(
+                        status().isNoContent()
+                );
     }
 }
