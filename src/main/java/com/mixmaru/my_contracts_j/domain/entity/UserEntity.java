@@ -10,7 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 
 import java.time.ZonedDateTime;
 
-class UserEntity {
+abstract class UserEntity {
     public Long getId() {
         return id;
     }
