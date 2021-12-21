@@ -1,5 +1,8 @@
 package com.mixmaru.my_contracts_j.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mixmaru.my_contracts_j.domain.application.UserApplication;
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * ここ見ながら書いた
@@ -46,7 +50,7 @@ public class UserControllerMockMvcTest {
 
         when(userApplication.registerNewIndividualUser(eq("yamada"), any(ZonedDateTime.class))).thenReturn(retUser);
 
-        this.mockMvc.perform(post("/user/").param("name", "yamada")).andExpect(content().string("{\"id\":1,\"createdAt\":\"2021-12-24T22:10:10+09:00\",\"updatedAt\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
+        this.mockMvc.perform(post("/user/").param("name", "yamada")).andExpect(content().string("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
     }
 
     @Test
@@ -58,7 +62,7 @@ public class UserControllerMockMvcTest {
 
         when(userApplication.getIndividualUser(1L)).thenReturn(Optional.ofNullable(retUser));
 
-        this.mockMvc.perform(get("/user/1")).andExpect(content().json("{\"id\":1,\"createdAt\":\"2021-12-24T22:10:10+09:00\",\"updatedAt\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
+        this.mockMvc.perform(get("/user/1")).andExpect(content().json("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
     }
 
     @Test
@@ -69,7 +73,21 @@ public class UserControllerMockMvcTest {
         // 検証
         this.mockMvc.perform(get("/user/-100"))
                 .andExpect(
-                        status().isNoContent()
+                        status().isNotFound()
                 );
+    }
+
+    @Test
+    public void testes() throws JsonProcessingException {
+        var bean = new IndividualUserEntity();
+        bean.setId(1L);
+        bean.setName("yamada");
+        bean.setCreatedAt(ZonedDateTime.now());
+        bean.setUpdatedAt(ZonedDateTime.now());
+
+        var mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        var result = mapper.writeValueAsString(bean);
+        assertNotNull(result);
     }
 }
