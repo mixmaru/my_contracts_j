@@ -1,7 +1,9 @@
 package com.mixmaru.my_contracts_j.domain.application;
 
 
+import com.mixmaru.my_contracts_j.domain.entity.CorporationUserEntity;
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
+import com.mixmaru.my_contracts_j.domain.repository.CorporationUserRepository;
 import com.mixmaru.my_contracts_j.domain.repository.IndividualUserRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +14,13 @@ import java.util.Optional;
 @Service
 public class UserApplication {
     private final IndividualUserRepository individualUserRepository;
+    private final CorporationUserRepository corporationUserRepository;
 
     public UserApplication(
-            IndividualUserRepository individualUserRepository
-    ) {
+            IndividualUserRepository individualUserRepository,
+            CorporationUserRepository corporationUserRepository) {
         this.individualUserRepository = individualUserRepository;
+        this.corporationUserRepository = corporationUserRepository;
     }
 
     /**
@@ -38,5 +42,15 @@ public class UserApplication {
      */
     public Optional<IndividualUserEntity> getIndividualUser(Long id) {
         return individualUserRepository.getById(id);
+    }
+
+    public CorporationUserEntity registerNewCorporationUser(String contactPersonName, String presidentName, String corporationName, ZonedDateTime createdAt) {
+        var newUser = new CorporationUserEntity();
+        newUser.setCorporationName(corporationName);
+        newUser.setPresidentName(presidentName);
+        newUser.setContactPersonName(contactPersonName);
+        newUser.setCreatedAt(createdAt);
+        newUser.setUpdatedAt(createdAt);
+        return corporationUserRepository.save(newUser);
     }
 }

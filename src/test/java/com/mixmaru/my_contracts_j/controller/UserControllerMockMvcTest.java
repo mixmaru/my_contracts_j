@@ -1,15 +1,16 @@
 package com.mixmaru.my_contracts_j.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.mixmaru.my_contracts_j.controller.request.CreateUserRequest;
 import com.mixmaru.my_contracts_j.domain.application.UserApplication;
+import com.mixmaru.my_contracts_j.domain.entity.CorporationUserEntity;
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -43,7 +44,7 @@ public class UserControllerMockMvcTest {
     private UserApplication userApplication;
 
     @Test
-    public void RegisterUser() throws Exception {
+    public void RegisterUser_individualUserの登録ができる() throws Exception {
         // モック作成
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
         var retUser = new IndividualUserEntity("山田", now);
@@ -51,8 +52,45 @@ public class UserControllerMockMvcTest {
 
         when(userApplication.registerNewIndividualUser(eq("山田"), any(ZonedDateTime.class))).thenReturn(retUser);
 
-        var result = this.mockMvc.perform(post("/user/").param("name", "山田")).andReturn();
+        var objectMapper = new ObjectMapper();
+        var request = new CreateUserRequest();
+        request.setType("individual_user");
+        request.setName("山田");
+        var result = this.mockMvc.perform(
+                post("/user/")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                ).andReturn();
         assertEquals("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"山田\"}", result.getResponse().getContentAsString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void RegisterUser_corporationUserの登録ができる() throws Exception {
+        // モック作成
+        var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
+        var retUser = new CorporationUserEntity();
+        retUser.setId(1L);
+        retUser.setContactPersonName("岡田");
+        retUser.setPresidentName("社長太郎");
+        retUser.setCorporationName("会社");
+        retUser.setCreatedAt(now);
+        retUser.setUpdatedAt(now);
+
+        when(userApplication.registerNewCorporationUser(eq("岡田"), eq("社長太郎"), eq("会社"), any(ZonedDateTime.class))).thenReturn(retUser);
+
+        // リクエスト作成
+        var request = new CreateUserRequest();
+        request.setType("corporation_user");
+        request.setContactPersonName("岡田");
+        request.setPresidentName("社長太郎");
+        request.setCorporationName("会社");
+        var contents = this.mockMvc.perform(
+                post("/user/")
+                        .content(new ObjectMapper().writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+        assertEquals("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"contact_person_name\":\"岡田\",\"president_name\":\"社長太郎\",\"corporation_name\":\"会社\"}", contents);
     }
 
     @Test
@@ -77,19 +115,5 @@ public class UserControllerMockMvcTest {
                 .andExpect(
                         status().isNotFound()
                 );
-    }
-
-    @Test
-    public void testes() throws JsonProcessingException {
-        var bean = new IndividualUserEntity();
-        bean.setId(1L);
-        bean.setName("yamada");
-        bean.setCreatedAt(ZonedDateTime.now());
-        bean.setUpdatedAt(ZonedDateTime.now());
-
-        var mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        var result = mapper.writeValueAsString(bean);
-        assertNotNull(result);
     }
 }

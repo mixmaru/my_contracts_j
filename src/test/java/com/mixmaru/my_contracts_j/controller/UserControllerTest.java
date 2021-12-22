@@ -1,5 +1,6 @@
 package com.mixmaru.my_contracts_j.controller;
 
+import com.mixmaru.my_contracts_j.controller.request.CreateUserRequest;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +27,12 @@ class UserControllerTest {
 
     @Test
     public void RegistUser() throws Exception {
-        @Data
-        class Request {
-            private String name;
-        }
-        var request = new Request();
+        var request = new CreateUserRequest();
         request.setName("yamada");
+        request.setType("individual_user");
 
         assertThat(this.restTemplate.postForObject(
-                "http://localhost:" + port + "/user/?name=yamada",
+                "http://localhost:" + port + "/user/",
                 request,
                 String.class
         )).contains("yamada");

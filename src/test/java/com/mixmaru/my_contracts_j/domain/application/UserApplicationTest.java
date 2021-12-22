@@ -45,4 +45,24 @@ class UserApplicationTest {
         // 検証
         assertTrue(gotUser.isEmpty());
     }
+
+    @Test
+    @Transactional
+    void registerNewCorporationUserで登録できる() {
+        // 実行
+        var now = ZonedDateTime.of(2021,2,3,4,5,6,555555555, ZoneId.of("Asia/Tokyo"));
+        var savedUser = app.registerNewCorporationUser(
+                "担当太郎",
+                "社長太郎",
+                "会社",
+                now);
+
+        // 検証
+        assertNotNull(savedUser);
+        assertEquals("会社", savedUser.getCorporationName());
+        assertEquals("社長太郎", savedUser.getPresidentName());
+        assertEquals("担当太郎", savedUser.getContactPersonName());
+        assertEquals(now, savedUser.getCreatedAt());
+        assertEquals(now, savedUser.getUpdatedAt());
+    }
 }

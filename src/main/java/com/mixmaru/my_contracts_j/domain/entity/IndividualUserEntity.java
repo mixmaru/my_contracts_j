@@ -1,11 +1,8 @@
 package com.mixmaru.my_contracts_j.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import lombok.EqualsAndHashCode;
-
 import java.time.ZonedDateTime;
 
-@EqualsAndHashCode(callSuper = true)
 public class IndividualUserEntity extends UserEntity {
     private String name;
 

@@ -1,8 +1,9 @@
 package com.mixmaru.my_contracts_j.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mixmaru.my_contracts_j.controller.request.CreateUserRequest;
 import com.mixmaru.my_contracts_j.domain.application.UserApplication;
-import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
+import com.mixmaru.my_contracts_j.domain.entity.UserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,19 @@ public class UserController {
     }
 
     @PostMapping("/user/")
-    public IndividualUserEntity register(@RequestParam("name") String name) {
+    public UserEntity register(@RequestBody CreateUserRequest request) {
         var now = ZonedDateTime.now();
-        return userApplication.registerNewIndividualUser(name, now);
+        switch (request.getType()) {
+            case "individual_user":
+                return userApplication.registerNewIndividualUser(request.getName(), now);
+            case "corporation_user":
+                return userApplication.registerNewCorporationUser(
+                        request.getContactPersonName(),
+                        request.getPresidentName(),
+                        request.getCorporationName(),
+                        now);
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 }
