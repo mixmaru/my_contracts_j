@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -45,12 +46,13 @@ public class UserControllerMockMvcTest {
     public void RegisterUser() throws Exception {
         // モック作成
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
-        var retUser = new IndividualUserEntity("yamada", now);
+        var retUser = new IndividualUserEntity("山田", now);
         retUser.setId(1L);
 
-        when(userApplication.registerNewIndividualUser(eq("yamada"), any(ZonedDateTime.class))).thenReturn(retUser);
+        when(userApplication.registerNewIndividualUser(eq("山田"), any(ZonedDateTime.class))).thenReturn(retUser);
 
-        this.mockMvc.perform(post("/user/").param("name", "yamada")).andExpect(content().string("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
+        var result = this.mockMvc.perform(post("/user/").param("name", "山田")).andReturn();
+        assertEquals("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"山田\"}", result.getResponse().getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
