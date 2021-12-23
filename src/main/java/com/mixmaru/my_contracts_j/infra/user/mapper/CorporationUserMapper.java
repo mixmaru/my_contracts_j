@@ -2,7 +2,6 @@ package com.mixmaru.my_contracts_j.infra.user.mapper;
 
 import com.mixmaru.my_contracts_j.domain.entity.CorporationUserEntity;
 import org.modelmapper.ModelMapper;
-
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -36,18 +35,15 @@ public class CorporationUserMapper extends UserMapper {
         this.corporationName = corporationName;
     }
 
+    public static CorporationUserMapper of(CorporationUserEntity entity) {
+        return new ModelMapper().map(entity, CorporationUserMapper.class);
+    }
+
     /**
      * mapperからentityを生成する
      * @return entity
      */
     public CorporationUserEntity generateEntity() {
-        var retEntity = new CorporationUserEntity();
-        retEntity.setId(this.getId());
-        retEntity.setCorporationName(this.corporationName);
-        retEntity.setPresidentName(this.presidentName);
-        retEntity.setContactPersonName(this.contactPersonName);
-        retEntity.setCreatedAt(this.getCreatedAt());
-        retEntity.setUpdatedAt(this.getUpdatedAt());
-        return retEntity;
+        return new ModelMapper().map(this, CorporationUserEntity.class);
     }
 }
