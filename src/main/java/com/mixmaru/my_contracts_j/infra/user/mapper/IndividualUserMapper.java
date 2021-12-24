@@ -2,6 +2,7 @@ package com.mixmaru.my_contracts_j.infra.user.mapper;
 
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -11,14 +12,16 @@ import java.time.ZonedDateTime;
 @PrimaryKeyJoinColumn(name = "userId")
 @Table(name = "users_individual")
 public class IndividualUserMapper extends UserMapper {
+
+    private static ModelMapper modelMapper = new ModelMapper();
+
+    public static IndividualUserMapper of(IndividualUserEntity entity) {
+        return modelMapper.map(entity, IndividualUserMapper.class);
+    }
+
     private String name;
 
     public IndividualUserMapper() {}
-
-    public IndividualUserMapper(String name, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
-        super(createdAt, updatedAt);
-        this.name = name;
-    }
 
     /**
      * mapperからentityを生成する

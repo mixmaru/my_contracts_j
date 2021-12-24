@@ -22,7 +22,7 @@ public class IndividualUserRepository {
     @Transactional
     public IndividualUserEntity save(IndividualUserEntity entity) {
         // IndividualUser保存
-        var individualUserMapper = new IndividualUserMapper(entity.getName(), entity.getCreatedAt(), entity.getUpdatedAt());
+        var individualUserMapper = IndividualUserMapper.of(entity);
         var savedIndividualUser = individualUserInnerRepository.save(individualUserMapper);
 
         // 返却用entityに組み立てる

@@ -11,6 +11,10 @@ import javax.persistence.Table;
 @Table(name = "users_corporation")
 public class CorporationUserMapper extends UserMapper {
 
+    public static CorporationUserMapper of(CorporationUserEntity entity) {
+        return new ModelMapper().map(entity, CorporationUserMapper.class);
+    }
+
     private String contactPersonName;
     public String getContactPersonName() {
         return contactPersonName;
@@ -33,10 +37,6 @@ public class CorporationUserMapper extends UserMapper {
     }
     public void setCorporationName(String corporationName) {
         this.corporationName = corporationName;
-    }
-
-    public static CorporationUserMapper of(CorporationUserEntity entity) {
-        return new ModelMapper().map(entity, CorporationUserMapper.class);
     }
 
     /**
