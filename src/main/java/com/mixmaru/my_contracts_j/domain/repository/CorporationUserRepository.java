@@ -6,6 +6,7 @@ import com.mixmaru.my_contracts_j.infra.user.mapper.CorporationUserMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Repository
 public class CorporationUserRepository {
@@ -23,10 +24,10 @@ public class CorporationUserRepository {
         return savedMapper.generateEntity();
     }
 
-//    public Optional<IndividualUserEntity> getById(Long id) {
-//        var loadedUser = individualUserInnerRepository.findById(id);
-//
-//        // 返却用entityに組み立てる
-//        return loadedUser.map(IndividualUserMapper::generateEntity);
-//    }
+    public Optional<CorporationUserEntity> getById(Long id) {
+        var loadedUser = repository.findById(id);
+
+        // 返却用entityに組み立てる
+        return loadedUser.map(CorporationUserMapper::generateEntity);
+    }
 }
