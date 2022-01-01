@@ -11,11 +11,11 @@ class IndividualUserEntityTest {
 
     @Test
     void testToJson() {
-        var entity = new IndividualUserEntity();
-        entity.setId(1L);
-        entity.setName("yamada");
-        entity.setCreatedAt(ZonedDateTime.of(2021,1,2,3,4,5,666666666, ZoneId.of("Asia/Tokyo")));
-        entity.setUpdatedAt(ZonedDateTime.of(2021,1,2,3,4,5,666666666, ZoneId.of("Asia/Tokyo")));
+        var entity = IndividualUserEntity.crateFromData(
+                1L,
+                "yamada",
+                ZonedDateTime.of(2021,1,2,3,4,5,666666666, ZoneId.of("Asia/Tokyo")),
+                ZonedDateTime.of(2021,1,2,3,4,5,666666666, ZoneId.of("Asia/Tokyo")));
 
         assertDoesNotThrow(() -> {
             assertEquals(

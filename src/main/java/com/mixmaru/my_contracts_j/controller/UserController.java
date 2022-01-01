@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<String> get(@PathVariable("id") Long id) {
+    public ResponseEntity<String> get(@PathVariable("id") long id) {
         var response = userApplication.getUser(id);
         UserEntity user = null;
         if(response.getIndividualUserEntity() != null) {

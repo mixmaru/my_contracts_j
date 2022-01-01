@@ -3,7 +3,6 @@ package com.mixmaru.my_contracts_j.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mixmaru.my_contracts_j.controller.request.CreateUserRequest;
 import com.mixmaru.my_contracts_j.domain.application.UserApplication;
-import com.mixmaru.my_contracts_j.domain.application.UserResponse;
 import com.mixmaru.my_contracts_j.domain.entity.CorporationUserEntity;
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ public class UserControllerMockMvcTest {
     public void RegisterUser_individualUserの登録ができる() throws Exception {
         // モック作成
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
-        var retUser = new IndividualUserEntity("山田", now);
+        var retUser = IndividualUserEntity.createNew("山田", now);
         retUser.setId(1L);
 
         when(userApplication.registerNewIndividualUser(eq("山田"), any(ZonedDateTime.class))).thenReturn(retUser);
@@ -68,13 +67,7 @@ public class UserControllerMockMvcTest {
     public void RegisterUser_corporationUserの登録ができる() throws Exception {
         // モック作成
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
-        var retUser = new CorporationUserEntity();
-        retUser.setId(1L);
-        retUser.setContactPersonName("岡田");
-        retUser.setPresidentName("社長太郎");
-        retUser.setCorporationName("会社");
-        retUser.setCreatedAt(now);
-        retUser.setUpdatedAt(now);
+        var retUser = CorporationUserEntity.createByData(1L, "会社", "社長太郎", "岡田", now);
 
         when(userApplication.registerNewCorporationUser(eq("岡田"), eq("社長太郎"), eq("会社"), any(ZonedDateTime.class))).thenReturn(retUser);
 
@@ -97,9 +90,18 @@ public class UserControllerMockMvcTest {
     public void get_userで個人ユーザーが存在する場合データが取得できる() throws Exception {
         // モック作成
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
-        var retUser = new IndividualUserEntity("yamada", now);
+        var retUser = IndividualUserEntity.createNew("yamada", now);
         retUser.setId(1L);
-        var userResponse = new UserResponse(retUser);
+        var userResponse = new UserApplication.IUserResponse() {
+            @Override
+            public IndividualUserEntity getIndividualUserEntity() {
+                return retUser;
+            }
+            @Override
+            public CorporationUserEntity getCorporationUserEntity() {
+                return null;
+            }
+        };
 
         when(userApplication.getUser(1L)).thenReturn(userResponse);
 
@@ -110,17 +112,17 @@ public class UserControllerMockMvcTest {
     public void get_userで企業ユーザーが存在する場合データが取得できる() throws Exception {
         // モック作成
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
-        var corpUser = new CorporationUserEntity() {
-            {
-                setId(10L);
-                setCorporationName("会社");
-                setPresidentName("社長");
-                setContactPersonName("担当");
-                setCreatedAt(now);
-                setUpdatedAt(now);
+        var corpUser = CorporationUserEntity.createByData(10L, "会社", "社長", "担当", now);
+        var userResponse = new UserApplication.IUserResponse() {
+            @Override
+            public IndividualUserEntity getIndividualUserEntity() {
+                return null;
+            }
+            @Override
+            public CorporationUserEntity getCorporationUserEntity() {
+                return corpUser;
             }
         };
-        var userResponse = new UserResponse(corpUser);
 
         when(userApplication.getUser(10L)).thenReturn(userResponse);
 
@@ -133,7 +135,16 @@ public class UserControllerMockMvcTest {
     @Test
     public void get_userが存在しない場合404が返る() throws Exception {
         // モック作成
-        when(userApplication.getUser(-100L)).thenReturn(new UserResponse());
+        when(userApplication.getUser(-100L)).thenReturn(new UserApplication.IUserResponse(){
+            @Override
+            public IndividualUserEntity getIndividualUserEntity() {
+                return null;
+            }
+            @Override
+            public CorporationUserEntity getCorporationUserEntity() {
+                return null;
+            }
+        });
 
         // 検証
         this.mockMvc.perform(get("/user/-100"))

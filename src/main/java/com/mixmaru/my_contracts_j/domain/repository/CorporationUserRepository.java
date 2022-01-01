@@ -19,15 +19,15 @@ public class CorporationUserRepository {
 
     @Transactional
     public CorporationUserEntity save(CorporationUserEntity entity) {
-        var mapper = CorporationUserMapper.of(entity);
+        var mapper = CorporationUserMapper.from(entity);
         var savedMapper = repository.save(mapper);
-        return savedMapper.generateEntity();
+        return savedMapper.newCorporationUserEntity();
     }
 
-    public Optional<CorporationUserEntity> getById(Long id) {
+    public Optional<CorporationUserEntity> getById(long id) {
         var loadedUser = repository.findById(id);
 
         // 返却用entityに組み立てる
-        return loadedUser.map(CorporationUserMapper::generateEntity);
+        return loadedUser.map(CorporationUserMapper::newCorporationUserEntity);
     }
 }

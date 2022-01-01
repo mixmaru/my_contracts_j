@@ -22,12 +22,7 @@ class CorporationUserRepositoryTest {
     void save() {
         // 準備
         var now = ZonedDateTime.of(2021,1,2,3,4,5,666666666, ZoneId.of("Asia/Tokyo"));
-        var entity = new CorporationUserEntity();
-        entity.setCorporationName("会社");
-        entity.setPresidentName("社長");
-        entity.setContactPersonName("担当");
-        entity.setCreatedAt(now);
-        entity.setUpdatedAt(now);
+        var entity = CorporationUserEntity.createNew("会社", "社長", "担当", now);
 
         // 実行
         var savedEntity = repository.save(entity);
