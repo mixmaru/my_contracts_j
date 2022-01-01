@@ -5,7 +5,6 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
 
 @Data
 @Entity
@@ -13,13 +12,13 @@ import java.time.ZonedDateTime;
 @Table(name = "users_individual")
 public class IndividualUserMapper extends UserMapper {
 
-    private static ModelMapper modelMapper = new ModelMapper();
+    private String name;
 
-    public static IndividualUserMapper of(IndividualUserEntity entity) {
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    public static IndividualUserMapper from(IndividualUserEntity entity) {
         return modelMapper.map(entity, IndividualUserMapper.class);
     }
-
-    private String name;
 
     public IndividualUserMapper() {}
 
@@ -27,7 +26,7 @@ public class IndividualUserMapper extends UserMapper {
      * mapperからentityを生成する
      * @return entity
      */
-    public IndividualUserEntity generateEntity() {
-        return new IndividualUserEntity(this.getId(), this.name, this.getCreatedAt(), this.getUpdatedAt());
+    public IndividualUserEntity newIndividualUserEntity() {
+        return IndividualUserEntity.crateFromData(this.getId(), this.name, this.getCreatedAt(), this.getUpdatedAt());
     }
 }

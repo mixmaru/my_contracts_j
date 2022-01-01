@@ -7,11 +7,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import lombok.ToString;
 
 import java.time.ZonedDateTime;
 
+@ToString
 public abstract class UserEntity {
-    public Long getId() {
+
+    ///// private field /////
+    private long id;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
+
+    ///// constructor /////
+    UserEntity() {}
+
+    ///// public method /////
+    public long getId() {
         return id;
     }
 
@@ -39,23 +51,6 @@ public abstract class UserEntity {
     }
 
     public void setUpdatedAt(ZonedDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    private Long id;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
-
-    public UserEntity() {}
-
-    public UserEntity(ZonedDateTime createdAt) {
-        this.createdAt = createdAt;
-        this.updatedAt = createdAt;
-    }
-
-    public UserEntity(Long id, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
-        this.id = id;
-        this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 

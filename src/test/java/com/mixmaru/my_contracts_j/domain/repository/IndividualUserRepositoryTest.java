@@ -22,7 +22,7 @@ class IndividualUserRepositoryTest {
     void save() {
         // 準備
         var now = ZonedDateTime.of(2021,1,2,3,4,5,6, ZoneId.of("Asia/Tokyo"));
-        var newUser = new IndividualUserEntity("yamada", now);
+        var newUser = IndividualUserEntity.createNew("yamada", now);
 
         // 実行
         var savedUser = individualUserRepository.save(newUser);
@@ -39,7 +39,7 @@ class IndividualUserRepositoryTest {
     void getById_1件データが取得できる() {
         // 準備
         var now = ZonedDateTime.of(2021,1,2,3,4,5,6, ZoneId.of("Asia/Tokyo"));
-        var newUser = new IndividualUserEntity("yamada", now);
+        var newUser = IndividualUserEntity.createNew("yamada", now);
         var savedUser = individualUserRepository.save(newUser);
 
         // 実行

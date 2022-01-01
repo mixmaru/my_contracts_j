@@ -9,15 +9,17 @@ import java.time.ZonedDateTime;
 public abstract class UserMapper {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    public Long getId() {
+    private long id;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
+
+    public long getId() {
         return id;
     }
     public void setId(Long id) {
         this.id = id;
     }
 
-    private ZonedDateTime createdAt;
     public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
@@ -25,7 +27,6 @@ public abstract class UserMapper {
         this.createdAt = createdAt;
     }
 
-    private ZonedDateTime updatedAt;
     public ZonedDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -33,11 +34,5 @@ public abstract class UserMapper {
         this.updatedAt = updatedAt;
     }
 
-
     public UserMapper() {}
-
-    public UserMapper(ZonedDateTime createdAt, ZonedDateTime updatedAt) {
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 }

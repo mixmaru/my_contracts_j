@@ -22,17 +22,17 @@ public class IndividualUserRepository {
     @Transactional
     public IndividualUserEntity save(IndividualUserEntity entity) {
         // IndividualUser保存
-        var individualUserMapper = IndividualUserMapper.of(entity);
+        var individualUserMapper = IndividualUserMapper.from(entity);
         var savedIndividualUser = individualUserInnerRepository.save(individualUserMapper);
 
         // 返却用entityに組み立てる
-        return savedIndividualUser.generateEntity();
+        return savedIndividualUser.newIndividualUserEntity();
     }
 
-    public Optional<IndividualUserEntity> getById(Long id) {
+    public Optional<IndividualUserEntity> getById(long id) {
         var loadedUser = individualUserInnerRepository.findById(id);
 
         // 返却用entityに組み立てる
-        return loadedUser.map(IndividualUserMapper::generateEntity);
+        return loadedUser.map(IndividualUserMapper::newIndividualUserEntity);
     }
 }

@@ -9,10 +9,41 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 @Service
 public class UserApplication {
+
+    public interface IUserResponse {
+        IndividualUserEntity getIndividualUserEntity();
+        CorporationUserEntity getCorporationUserEntity();
+    }
+
+    private static class UserResponse implements IUserResponse {
+
+        private final IndividualUserEntity individualUserEntity;
+        private final CorporationUserEntity corporationUserEntity;
+
+        public UserResponse() {
+            this.individualUserEntity = null;
+            this.corporationUserEntity = null;
+        }
+
+        public UserResponse(
+                IndividualUserEntity individualUserEntity,
+                CorporationUserEntity corporationUserEntity) {
+            this.individualUserEntity = individualUserEntity;
+            this.corporationUserEntity = corporationUserEntity;
+        }
+
+        public IndividualUserEntity getIndividualUserEntity() {
+            return individualUserEntity;
+        }
+
+        public CorporationUserEntity getCorporationUserEntity() {
+            return corporationUserEntity;
+        }
+    }
+
     private final IndividualUserRepository individualUserRepository;
     private final CorporationUserRepository corporationUserRepository;
 
@@ -31,7 +62,7 @@ public class UserApplication {
      */
     @Transactional
     public IndividualUserEntity registerNewIndividualUser(String name, ZonedDateTime createdAt) {
-        var newUser = new IndividualUserEntity(name, createdAt);
+        var newUser = IndividualUserEntity.createNew(name, createdAt);
         return individualUserRepository.save(newUser);
     }
 
@@ -40,18 +71,18 @@ public class UserApplication {
      * @param id 個人userのid
      * @return 取得された個人userのentity
      */
-    public UserResponse getUser(Long id) {
+    public IUserResponse getUser(long id) {
 
         // 個人user取得
         var individualUser = individualUserRepository.getById(id);
         if(individualUser.isPresent()) {
-            return new UserResponse(individualUser.orElseThrow());
+            return new UserResponse(individualUser.orElseThrow(), null);
         }
 
         // 企業user取得
         var corporationUser = corporationUserRepository.getById(id);
         if(corporationUser.isPresent()) {
-            return new UserResponse(corporationUser.orElseThrow());
+            return new UserResponse(null, corporationUser.orElseThrow());
         }
 
         // なにもなければ空データを返す
@@ -60,12 +91,12 @@ public class UserApplication {
     }
 
     public CorporationUserEntity registerNewCorporationUser(String contactPersonName, String presidentName, String corporationName, ZonedDateTime createdAt) {
-        var newUser = new CorporationUserEntity();
-        newUser.setCorporationName(corporationName);
-        newUser.setPresidentName(presidentName);
-        newUser.setContactPersonName(contactPersonName);
-        newUser.setCreatedAt(createdAt);
-        newUser.setUpdatedAt(createdAt);
+        var newUser = CorporationUserEntity.createNew(
+                corporationName,
+                presidentName,
+                contactPersonName,
+                createdAt
+        );
         return corporationUserRepository.save(newUser);
     }
 }
