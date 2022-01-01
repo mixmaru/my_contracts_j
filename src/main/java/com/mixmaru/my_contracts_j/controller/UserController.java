@@ -21,19 +21,22 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     public ResponseEntity<String> get(@PathVariable("id") Long id) {
-        var user = userApplication.getIndividualUser(id);
-        if(user.isPresent()) {
-            // userが存在するならデータをjson形式で返す
-            try{
-                var body = user.orElseThrow().toJson();
-                return new ResponseEntity<>(body, HttpStatus.OK);
-            } catch (JsonProcessingException e) {
-                // jsonパースが失敗した場合
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        var response = userApplication.getUser(id);
+        UserEntity user = null;
+        if(response.getIndividualUserEntity() != null) {
+            user = response.getIndividualUserEntity();
+        } else if(response.getCorporationUserEntity() != null) {
+            user = response.getCorporationUserEntity();
         } else {
             // userが存在しなければ404
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            return new ResponseEntity<>(user.toJson(), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            // jsonパースが失敗した場合
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

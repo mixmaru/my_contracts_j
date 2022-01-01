@@ -3,6 +3,7 @@ package com.mixmaru.my_contracts_j.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mixmaru.my_contracts_j.controller.request.CreateUserRequest;
 import com.mixmaru.my_contracts_j.domain.application.UserApplication;
+import com.mixmaru.my_contracts_j.domain.application.UserResponse;
 import com.mixmaru.my_contracts_j.domain.entity.CorporationUserEntity;
 import com.mixmaru.my_contracts_j.domain.entity.IndividualUserEntity;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -94,21 +94,46 @@ public class UserControllerMockMvcTest {
     }
 
     @Test
-    public void get_userが存在する場合データが取得できる() throws Exception {
+    public void get_userで個人ユーザーが存在する場合データが取得できる() throws Exception {
         // モック作成
         var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
         var retUser = new IndividualUserEntity("yamada", now);
         retUser.setId(1L);
+        var userResponse = new UserResponse(retUser);
 
-        when(userApplication.getIndividualUser(1L)).thenReturn(Optional.ofNullable(retUser));
+        when(userApplication.getUser(1L)).thenReturn(userResponse);
 
         this.mockMvc.perform(get("/user/1")).andExpect(content().json("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
     }
 
     @Test
+    public void get_userで企業ユーザーが存在する場合データが取得できる() throws Exception {
+        // モック作成
+        var now = ZonedDateTime.of(2021, 12, 24, 22, 10, 10, 0, ZoneId.of("Asia/Tokyo"));
+        var corpUser = new CorporationUserEntity() {
+            {
+                setId(10L);
+                setCorporationName("会社");
+                setPresidentName("社長");
+                setContactPersonName("担当");
+                setCreatedAt(now);
+                setUpdatedAt(now);
+            }
+        };
+        var userResponse = new UserResponse(corpUser);
+
+        when(userApplication.getUser(10L)).thenReturn(userResponse);
+
+        this.mockMvc.perform(get("/user/10")).andExpect(
+                content().json(
+                        "{\"id\":10,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"contact_person_name\":\"担当\",\"president_name\":\"社長\",\"corporation_name\":\"会社\"}"
+                ));
+    }
+
+    @Test
     public void get_userが存在しない場合404が返る() throws Exception {
         // モック作成
-        when(userApplication.getIndividualUser(1L)).thenReturn(Optional.empty());
+        when(userApplication.getUser(-100L)).thenReturn(new UserResponse());
 
         // 検証
         this.mockMvc.perform(get("/user/-100"))

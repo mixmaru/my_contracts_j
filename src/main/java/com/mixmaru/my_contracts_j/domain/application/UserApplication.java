@@ -40,8 +40,23 @@ public class UserApplication {
      * @param id 個人userのid
      * @return 取得された個人userのentity
      */
-    public Optional<IndividualUserEntity> getIndividualUser(Long id) {
-        return individualUserRepository.getById(id);
+    public UserResponse getUser(Long id) {
+
+        // 個人user取得
+        var individualUser = individualUserRepository.getById(id);
+        if(individualUser.isPresent()) {
+            return new UserResponse(individualUser.orElseThrow());
+        }
+
+        // 企業user取得
+        var corporationUser = corporationUserRepository.getById(id);
+        if(corporationUser.isPresent()) {
+            return new UserResponse(corporationUser.orElseThrow());
+        }
+
+        // なにもなければ空データを返す
+        return new UserResponse();
+
     }
 
     public CorporationUserEntity registerNewCorporationUser(String contactPersonName, String presidentName, String corporationName, ZonedDateTime createdAt) {
