@@ -60,7 +60,7 @@ public class UserControllerMockMvcTest {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andReturn();
-        assertEquals("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"山田\"}", result.getResponse().getContentAsString(StandardCharsets.UTF_8));
+        assertEquals("{\"id\":1,\"type\":\"individual_user\",\"name\":\"山田\",\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\"}", result.getResponse().getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class UserControllerMockMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
 
-        assertEquals("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"contact_person_name\":\"岡田\",\"president_name\":\"社長太郎\",\"corporation_name\":\"会社\"}", contents);
+        assertEquals("{\"id\":1,\"type\":\"corporation_user\",\"corporation_name\":\"会社\",\"president_name\":\"社長太郎\",\"contact_person_name\":\"岡田\",\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\"}", contents);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class UserControllerMockMvcTest {
 
         when(userApplication.getUser(1L)).thenReturn(userResponse);
 
-        this.mockMvc.perform(get("/user/1")).andExpect(content().json("{\"id\":1,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
+        this.mockMvc.perform(get("/user/1")).andExpect(content().json("{\"id\":1,\"type\":\"individual_user\",\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"name\":\"yamada\"}"));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class UserControllerMockMvcTest {
 
         this.mockMvc.perform(get("/user/10")).andExpect(
                 content().json(
-                        "{\"id\":10,\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"contact_person_name\":\"担当\",\"president_name\":\"社長\",\"corporation_name\":\"会社\"}"
+                        "{\"id\":10,\"type\":\"corporation_user\",\"created_at\":\"2021-12-24T22:10:10+09:00\",\"updated_at\":\"2021-12-24T22:10:10+09:00\",\"contact_person_name\":\"担当\",\"president_name\":\"社長\",\"corporation_name\":\"会社\"}"
                 ));
     }
 
