@@ -32,23 +32,15 @@ public class UserController {
     @GetMapping("/user/{id}")
     public ResponseEntity<String> get(@PathVariable("id") long id) {
         var response = userApplication.getUser(id);
-        UserDto userDto;
         if(response.getIndividualUserEntity() != null) {
             var entity = response.getIndividualUserEntity();
-            userDto = new IndividualUserDto(entity);
+            return createResponseEntity(new IndividualUserDto(entity));
         } else if(response.getCorporationUserEntity() != null) {
             var entity = response.getCorporationUserEntity();
-            userDto = new CorporationUserDto(entity);
+            return createResponseEntity(new CorporationUserDto(entity));
         } else {
             // userが存在しなければ404
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        try {
-            return new ResponseEntity<>(userDto.toJson(), HttpStatus.OK);
-        } catch (JsonProcessingException e) {
-            // jsonパースが失敗した場合
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
