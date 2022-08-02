@@ -198,3 +198,7 @@ function git-fzf() {
 }
 zle -N git-fzf
 bindkey "^[b" git-fzf
+
+
+### エイリアス
+alias ls='ls -F' la='ls -a' ll='ls -la'
