@@ -182,6 +182,15 @@ function ghq-fzf() {
 
   zle reset-prompt
 }
-
 zle -N ghq-fzf
 bindkey "^g" ghq-fzf
+
+# git branch
+function git-fzf() {
+  local target_branch=$(git branch -a | fzf | awk '$1=="*"{print $2}$1!="*"{print $1}')
+
+  if [ -n "$target_branch" ]; then
+    git checkout ${target_branch}
+  fi
+}
+zle -N git-fzf
